@@ -1,24 +1,30 @@
 import express, { ErrorRequestHandler } from 'express';
-import morgan from 'morgan';
-import { createPostHandler, listPostsHandler } from './handlers/postHandler';
 import asyncHandler from 'express-async-handler';
+import morgan from 'morgan';
 
-const app = express();
+import { initDb } from './datastore';
+import { createPostHandler, listPostsHandler } from './handlers/postHandler';
 
-app.use(express.json());
+(async () => {
+  await initDb();
 
-app.use(morgan('tiny'));
+  const app = express();
 
-app.get('/v1/posts', asyncHandler(listPostsHandler));
-app.post('/v1/posts', asyncHandler(createPostHandler));
+  app.use(express.json());
 
-const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  console.log('Uncaught exeception: ', err);
-  return res.status(500).send('Oops, an unexpected error occurred, please try again');
-};
+  app.use(morgan('tiny'));
 
-app.use(errorHandler);
+  app.get('/v1/posts', asyncHandler(listPostsHandler));
+  app.post('/v1/posts', asyncHandler(createPostHandler));
 
-app.listen(3000, () => {
-  console.log('Server runing on port 3000');
-});
+  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+    console.log('Uncaught exeception: ', err);
+    return res.status(500).send('Oops, an unexpected error occurred, please try again');
+  };
+
+  app.use(errorHandler);
+
+  app.listen(3000, () => {
+    console.log('Server runing on port 3000');
+  });
+})();

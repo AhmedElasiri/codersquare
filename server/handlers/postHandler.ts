@@ -12,7 +12,7 @@ export const listPostsHandler: ExpressHandler<ListPostsRequest, ListPostsRespons
   res.send({ posts: await db.listPosts() });
 };
 
-export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = (
+export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (
   req,
   res
 ) => {
@@ -32,6 +32,6 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
     userId: req.body.userId,
     postedAt: Date.now(),
   };
-  db.createPost(post);
+  await db.createPost(post);
   res.sendStatus(200);
 };
