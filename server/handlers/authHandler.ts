@@ -15,13 +15,14 @@ export const singUpHandler: ExpressHandler<SingUpRequest, SingUpResponse> = asyn
   if (existing) {
     return res.status(403).send({ error: 'User already exists' });
   }
+
   const user: User = {
     id: crypto.randomUUID(),
     firstName,
     lastName,
     email,
-    password,
     username,
+    password: hashPassword(password),
   };
   await db.createUser(user);
   const jwt = signJwt({ userId: user.id });
@@ -34,9 +35,8 @@ export const singInHandler: ExpressHandler<SingInRequest, SingInResponse> = asyn
     return res.status(400).send({ error: 'All fields are required' });
   }
 
-  console.log(login);
   const existing = (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
-  if (!existing || existing.password !== password) {
+  if (!existing || existing.password !== hashPassword(password)) {
     return res.status(403).send({ error: 'User already exists' });
   }
   const jwt = signJwt({ userId: existing.id });
@@ -52,3 +52,7 @@ export const singInHandler: ExpressHandler<SingInRequest, SingInResponse> = asyn
     jwt,
   });
 };
+
+function hashPassword(password: string): string {
+  return crypto.pbkdf2Sync(password, process.env.PASSWORD_SALT!, 42, 32, 'sha512').toString('hex');
+}
