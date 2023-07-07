@@ -4,6 +4,7 @@ import morgan from 'morgan';
 
 import { initDb } from './datastore';
 import { createPostHandler, listPostsHandler } from './handlers/postHandler';
+import { singInHandler, singUpHandler } from './handlers/userHandler';
 
 (async () => {
   await initDb();
@@ -16,6 +17,9 @@ import { createPostHandler, listPostsHandler } from './handlers/postHandler';
 
   app.get('/v1/posts', asyncHandler(listPostsHandler));
   app.post('/v1/posts', asyncHandler(createPostHandler));
+
+  app.post('/v1/signup', asyncHandler(singUpHandler));
+  app.post('/v1/signin', asyncHandler(singInHandler));
 
   const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     console.log('Uncaught exeception: ', err);
