@@ -3,8 +3,9 @@ import asyncHandler from 'express-async-handler';
 import morgan from 'morgan';
 
 import { initDb } from './datastore';
+import { singInHandler, singUpHandler } from './handlers/authHandler';
 import { createPostHandler, listPostsHandler } from './handlers/postHandler';
-import { singInHandler, singUpHandler } from './handlers/userHandler';
+import { errorHandler } from './middleware/errorMiddleware';
 
 (async () => {
   await initDb();
@@ -20,11 +21,6 @@ import { singInHandler, singUpHandler } from './handlers/userHandler';
 
   app.post('/v1/signup', asyncHandler(singUpHandler));
   app.post('/v1/signin', asyncHandler(singInHandler));
-
-  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-    console.log('Uncaught exeception: ', err);
-    return res.status(500).send('Oops, an unexpected error occurred, please try again');
-  };
 
   app.use(errorHandler);
 
