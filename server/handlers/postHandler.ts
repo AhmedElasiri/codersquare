@@ -17,7 +17,7 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
   res
 ) => {
   // TODO: better error message
-  if (!req.body.title || !req.body.url || !req.body.userId) {
+  if (!req.body.title || !req.body.url) {
     res.sendStatus(400);
     return;
   }
@@ -25,11 +25,12 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
   // TODO: get user Id from session
   // TODO: validate title and url are non-empty
   // TODO: validate url is new, otherwise add +1 to existing post
+  console.log(res.locals);
   const post: Post = {
     id: crypto.randomUUID(),
     title: req.body.title,
     url: req.body.url,
-    userId: req.body.userId,
+    userId: res.locals.userId,
     postedAt: Date.now(),
   };
   await db.createPost(post);
