@@ -22,11 +22,16 @@ export type SingUpRequest = Pick<
   User,
   'email' | 'firstName' | 'lastName' | 'username' | 'password'
 >;
-export interface SingUpResponse {}
+export interface SingUpResponse {
+  jwt: string;
+}
 
 export interface SingInRequest {
   login: string;
   password: string;
 }
 
-export type SingInResponse = Pick<User, 'email' | 'firstName' | 'lastName' | 'username' | 'id'>;
+export type SingInResponse = {
+  user: Pick<User, 'email' | 'firstName' | 'lastName' | 'username' | 'id'>;
+  jwt: string;
+};
