@@ -8,6 +8,7 @@ export const authMiddleware: ExpressHandler<any, any> = async (req, res, next) =
     return res.sendStatus(401);
   }
   try {
+    // Validate user exist
     const payload = virifyJwt(token);
     const user = await db.getUserById(payload.userId);
     if (!user) {

@@ -13,6 +13,8 @@ import { errorHandler } from './middleware/errorMiddleware';
   await initDb();
   dotenv.config();
 
+  const PORT = process.env.PORT || 3000;
+
   const app = express();
 
   app.use(express.json());
@@ -20,18 +22,19 @@ import { errorHandler } from './middleware/errorMiddleware';
   app.use(morgan('tiny'));
 
   // Public endpoints
+  app.get('/v1/healthz', (req, res) => res.send({ status: 'OK ✌️' }));
   app.post('/v1/signup', asyncHandler(singUpHandler));
   app.post('/v1/signin', asyncHandler(singInHandler));
+  app.get('/v1/posts', asyncHandler(listPostsHandler));
 
   app.use(authMiddleware);
 
   // Protedcted endpoints
-  app.get('/v1/posts', asyncHandler(listPostsHandler));
   app.post('/v1/posts', asyncHandler(createPostHandler));
 
   app.use(errorHandler);
 
-  app.listen(3000, () => {
-    console.log('Server runing on port 3000');
+  app.listen(PORT, () => {
+    console.log(`Server runing on port ${PORT}`);
   });
 })();

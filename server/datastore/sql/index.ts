@@ -11,7 +11,7 @@ export class SqlDatastore implements Datastore {
   public async openDb() {
     // open the database
     this.db = await sqliteOpen({
-      filename: path.join(__dirname, 'codersquare.sqlite'),
+      filename: path.join(__dirname, 'hackerNews.sqlite'),
       driver: sqlite3.Database,
     });
 

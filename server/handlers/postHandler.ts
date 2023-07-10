@@ -21,11 +21,8 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
     res.sendStatus(400);
     return;
   }
-  // TODO: validate user exists
-  // TODO: get user Id from session
-  // TODO: validate title and url are non-empty
+
   // TODO: validate url is new, otherwise add +1 to existing post
-  console.log(res.locals);
   const post: Post = {
     id: crypto.randomUUID(),
     title: req.body.title,
