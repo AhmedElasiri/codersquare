@@ -5,7 +5,12 @@ import morgan from 'morgan';
 
 import { initDb } from './datastore';
 import { singInHandler, singUpHandler } from './handlers/authHandler';
-import { createPostHandler, listPostsHandler } from './handlers/postHandler';
+import {
+  createPostHandler,
+  deletePostHandler,
+  getPostHandler,
+  listPostsHandler,
+} from './handlers/postHandler';
 import { authMiddleware } from './middleware/authMiddleware';
 import { errorHandler } from './middleware/errorMiddleware';
 
@@ -26,11 +31,13 @@ import { errorHandler } from './middleware/errorMiddleware';
   app.post('/v1/signup', asyncHandler(singUpHandler));
   app.post('/v1/signin', asyncHandler(singInHandler));
   app.get('/v1/posts', asyncHandler(listPostsHandler));
+  app.get('/v1/posts/:id', asyncHandler(getPostHandler));
 
   app.use(authMiddleware);
 
   // Protedcted endpoints
   app.post('/v1/posts', asyncHandler(createPostHandler));
+  app.delete('/v1/posts/:id', asyncHandler(deletePostHandler));
 
   app.use(errorHandler);
 

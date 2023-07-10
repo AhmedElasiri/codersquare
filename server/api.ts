@@ -9,10 +9,11 @@ export interface ListPostsResponse {
 export type createPostRequest = Pick<Post, 'title' | 'url'>;
 export interface createPostResponse {}
 
-export interface GetPostRequest {}
 export interface GetPostResponse {
   post: Post;
 }
+
+export interface deletePostResponse {}
 // Comment APIs
 
 // Like APIs

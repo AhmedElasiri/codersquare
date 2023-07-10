@@ -33,7 +33,14 @@ export interface Comment {
 type withError<T> = T & { error: string };
 
 export type ExpressHandler<Req, Res> = RequestHandler<
-  string,
+  boolean,
+  Partial<withError<Res>>,
+  Partial<Req>,
+  any
+>;
+
+export type ExpressHandlerWithParams<Params, Req, Res> = RequestHandler<
+  Partial<Params>,
   Partial<withError<Res>>,
   Partial<Req>,
   any
