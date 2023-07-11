@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 import { initDb } from './datastore';
 import { singInHandler, singUpHandler } from './handlers/authHandler';
+import { createCommentHandler } from './handlers/commentHandler';
 import {
   createPostHandler,
   deletePostHandler,
@@ -38,6 +39,7 @@ import { errorHandler } from './middleware/errorMiddleware';
   // Protedcted endpoints
   app.post('/v1/posts', asyncHandler(createPostHandler));
   app.delete('/v1/posts/:id', asyncHandler(deletePostHandler));
+  app.post('/v1/comment', asyncHandler(createCommentHandler));
 
   app.use(errorHandler);
 

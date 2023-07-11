@@ -1,4 +1,4 @@
-import { Post, User } from './types';
+import { Comment, Post, User } from './types';
 
 // Post APIs
 export interface ListPostsRequest {}
@@ -13,8 +13,21 @@ export interface GetPostResponse {
   post: Post;
 }
 
-export interface deletePostResponse {}
+export interface DeletePostResponse {}
+
 // Comment APIs
+export interface ListCommentsRequest {
+  postId: string;
+}
+export type ListCommentsResponse = Pick<
+  Comment,
+  'comment' | 'id' | 'postId' | 'createdAt' | 'userId'
+>[];
+
+export type CreateCommentRequest = Pick<Comment, 'comment' | 'postId' | 'parentId'>;
+export interface CreateCommentResponse {}
+
+export interface DeleteCommentResponse {}
 
 // Like APIs
 

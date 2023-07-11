@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE posts (
-   id       VARCHAR PRIMARY KEY,S
+   id       VARCHAR PRIMARY KEY,
    title    VARCHAR NOT NULL,
    url      VARCHAR UNIQUE NOT NULL,
    userId   VARCHAR NOT NULl,

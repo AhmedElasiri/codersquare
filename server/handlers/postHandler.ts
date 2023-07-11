@@ -2,12 +2,12 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 
 import {
+  DeletePostResponse,
   GetPostResponse,
   ListPostsRequest,
   ListPostsResponse,
   createPostRequest,
   createPostResponse,
-  deletePostResponse,
 } from '../api';
 import { db } from '../datastore';
 import { ExpressHandler, ExpressHandlerWithParams, Post } from '../types';
@@ -60,7 +60,7 @@ export const getPostHandler: ExpressHandlerWithParams<
 export const deletePostHandler: ExpressHandlerWithParams<
   { id: string },
   null,
-  deletePostResponse
+  DeletePostResponse
 > = async (req, res) => {
   if (!req.params.id) {
     res.sendStatus(400);

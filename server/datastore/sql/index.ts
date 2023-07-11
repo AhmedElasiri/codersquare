@@ -26,13 +26,14 @@ export class SqlDatastore implements Datastore {
 
   async createUser(user: User): Promise<void> {
     await this.db.run(
-      'INSERT INTO users (id, email, password, firstName, lastName, username) VALUES (?,?,?,?,?,?)',
+      'INSERT INTO users (id, email, password, firstName, lastName, username, createdAT) VALUES (?,?,?,?,?,?,?)',
       user.id,
       user.email,
       user.password,
       user.firstName,
       user.lastName,
-      user.username
+      user.username,
+      user.createdAt
     );
   }
 
@@ -73,8 +74,16 @@ export class SqlDatastore implements Datastore {
   createLike(like: Like): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  createComment(comment: Comment): Promise<void> {
-    throw new Error('Method not implemented.');
+  async createComment(comment: Comment): Promise<void> {
+    this.db.run(
+      'INSERT INTO comments (id, userId, postId, content, createdAt, parent_comment_id) VALUES (?,?,?,?,?,?)',
+      comment.id,
+      comment.userId,
+      comment.postId,
+      comment.comment,
+      comment.createdAt,
+      comment.parentId
+    );
   }
   listComments(postId: string): Promise<Comment[]> {
     throw new Error('Method not implemented.');

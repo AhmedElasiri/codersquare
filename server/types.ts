@@ -7,6 +7,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
+  createdAt: number;
 }
 
 export interface Post {
@@ -27,7 +28,8 @@ export interface Comment {
   userId: string;
   postId: string;
   comment: string;
-  postedAt: string;
+  createdAt: number;
+  parentId?: string;
 }
 
 type withError<T> = T & { error: string };

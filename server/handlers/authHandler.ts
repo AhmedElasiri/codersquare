@@ -13,7 +13,7 @@ export const singUpHandler: ExpressHandler<SingUpRequest, SingUpResponse> = asyn
 
   const existing = (await db.getUserByEmail(email)) || (await db.getUserByUsername(username));
   if (existing) {
-    return res.status(403).send({ error: 'User already exists' });
+    return res.status(409).send({ error: 'User already exists' });
   }
 
   const user: User = {
@@ -23,6 +23,7 @@ export const singUpHandler: ExpressHandler<SingUpRequest, SingUpResponse> = asyn
     email,
     username,
     password: hashPassword(password),
+    createdAt: Date.now(),
   };
   await db.createUser(user);
   const jwt = signJwt({ userId: user.id });
@@ -37,7 +38,9 @@ export const singInHandler: ExpressHandler<SingInRequest, SingInResponse> = asyn
 
   const existing = (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
   if (!existing || existing.password !== hashPassword(password)) {
-    return res.status(403).send({ error: 'Email or password wrong' });
+    return res.status(403).send({
+      error: 'Invalid email or password. Please try again.',
+    });
   }
   const jwt = signJwt({ userId: existing.id });
 
