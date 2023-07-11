@@ -5,7 +5,11 @@ import morgan from 'morgan';
 
 import { initDb } from './datastore';
 import { singInHandler, singUpHandler } from './handlers/authHandler';
-import { createCommentHandler, listComments } from './handlers/commentHandler';
+import {
+  createCommentHandler,
+  deleteCommentHandler,
+  listComments,
+} from './handlers/commentHandler';
 import {
   createPostHandler,
   deletePostHandler,
@@ -41,6 +45,7 @@ import { errorHandler } from './middleware/errorMiddleware';
   app.post('/v1/posts', asyncHandler(createPostHandler));
   app.delete('/v1/posts/:id', asyncHandler(deletePostHandler));
   app.post('/v1/comment', asyncHandler(createCommentHandler));
+  app.delete('/v1/comments/:id', asyncHandler(deleteCommentHandler));
 
   app.use(errorHandler);
 

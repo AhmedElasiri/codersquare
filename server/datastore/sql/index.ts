@@ -38,15 +38,15 @@ export class SqlDatastore implements Datastore {
   }
 
   getUserById(id: string): Promise<User | undefined> {
-    return this.db.get('SELECT * FROM users WHERE id = ?', id);
+    return this.db.get<User>('SELECT * FROM users WHERE id = ?', id);
   }
 
   getUserByEmail(email: string): Promise<User | undefined> {
-    return this.db.get(`SELECT * FROM users WHERE email = ?`, email);
+    return this.db.get<User>(`SELECT * FROM users WHERE email = ?`, email);
   }
   getUserByUsername(username: string): Promise<User | undefined> {
     // console.log(username);
-    let xz = this.db.get(`SELECT * FROM users WHERE username = ?`, username);
+    let xz = this.db.get<User>(`SELECT * FROM users WHERE username = ?`, username);
     return xz;
   }
 
@@ -66,7 +66,7 @@ export class SqlDatastore implements Datastore {
   }
 
   getPost(id: string): Promise<Post | undefined> {
-    return this.db.get(`SELECT * FROM posts WHERE id = ?`, id);
+    return this.db.get<Post>(`SELECT * FROM posts WHERE id = ?`, id);
   }
   async deletePost(id: string): Promise<void> {
     this.db.run(`DELETE FROM posts WHERE id = ?`, id);
@@ -86,9 +86,13 @@ export class SqlDatastore implements Datastore {
     );
   }
   listComments(postId: string): Promise<Comment[]> {
-    return this.db.all('SELECT * FROM comments WHERE postId = ?', postId);
+    return this.db.all<Comment[]>('SELECT * FROM comments WHERE postId = ?', postId);
   }
-  deleteComment(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteComment(id: string): Promise<void> {
+    this.db.run('DELETE FROM comments WHERE id = ?', id);
+  }
+
+  getComment(id: string): Promise<Comment | undefined> {
+    return this.db.get<Comment>('SELECT * FROM comments WHERE id = ?', id);
   }
 }

@@ -39,7 +39,7 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
     postedAt: Date.now(),
   };
   await db.createPost(post);
-  res.sendStatus(200);
+  res.sendStatus(201);
 };
 
 export const getPostHandler: ExpressHandlerWithParams<
@@ -53,7 +53,6 @@ export const getPostHandler: ExpressHandlerWithParams<
   if (!postToReturn) {
     return res.sendStatus(404);
   }
-
   return res.status(200).send({ post: postToReturn });
 };
 
@@ -66,7 +65,7 @@ export const deletePostHandler: ExpressHandlerWithParams<
     res.sendStatus(400);
     return;
   }
-  if (!postBelongToCurrentUser(req, res)) {
+  if (!isPostBelongToCurrentUser(req, res)) {
     res.sendStatus(403);
     return;
   }
@@ -74,11 +73,10 @@ export const deletePostHandler: ExpressHandlerWithParams<
   res.sendStatus(204);
 };
 
-async function postBelongToCurrentUser(req: Request, res: Response): Promise<boolean> {
+async function isPostBelongToCurrentUser(req: Request, res: Response): Promise<boolean> {
   const post = await db.getPost(req.params.id);
   if (post?.userId === res.locals.userId) {
     return true;
   }
-  console.log('object');
   return false;
 }

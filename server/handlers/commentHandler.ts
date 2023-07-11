@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import {
   CreateCommentRequest,
   CreateCommentResponse,
-  ListCommentsRequest,
+  DeleteCommentResponse,
   ListCommentsResponse,
 } from '../api';
 import { db } from '../datastore';
@@ -30,7 +30,7 @@ export const createCommentHandler: ExpressHandler<
     parentId,
   };
   await db.createComment(commen);
-  return res.sendStatus(200);
+  return res.sendStatus(201);
 };
 
 export const listComments: ExpressHandlerWithParams<
@@ -47,4 +47,23 @@ export const listComments: ExpressHandlerWithParams<
     return res.status(200).send({ comments });
   }
   return res.status(404).send({ error: 'No comments for this post id ' + req.params.postId });
+};
+
+export const deleteCommentHandler: ExpressHandlerWithParams<
+  { id: string },
+  null,
+  DeleteCommentResponse
+> = async (req, res) => {
+  if (!req.params.id) {
+    return res.sendStatus(400);
+  }
+  const comment = await db.getComment(req.params.id);
+  if (!comment) {
+    return res.sendStatus(404);
+  }
+  if (res.locals.userId !== comment.userId) {
+    return res.sendStatus(403);
+  }
+  await db.deleteComment(req.params.id);
+  return res.sendStatus(204);
 };

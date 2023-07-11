@@ -16,9 +16,6 @@ export interface GetPostResponse {
 export interface DeletePostResponse {}
 
 // Comment APIs
-export interface ListCommentsRequest {
-  postId: string;
-}
 export type ListCommentsResponse = { comments: Comment[] };
 
 export type CreateCommentRequest = Pick<Comment, 'comment' | 'postId' | 'parentId'>;
