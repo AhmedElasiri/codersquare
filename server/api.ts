@@ -19,10 +19,7 @@ export interface DeletePostResponse {}
 export interface ListCommentsRequest {
   postId: string;
 }
-export type ListCommentsResponse = Pick<
-  Comment,
-  'comment' | 'id' | 'postId' | 'createdAt' | 'userId'
->[];
+export type ListCommentsResponse = { comments: Comment[] };
 
 export type CreateCommentRequest = Pick<Comment, 'comment' | 'postId' | 'parentId'>;
 export interface CreateCommentResponse {}

@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import { initDb } from './datastore';
 import { singInHandler, singUpHandler } from './handlers/authHandler';
-import { createCommentHandler } from './handlers/commentHandler';
+import { createCommentHandler, listComments } from './handlers/commentHandler';
 import {
   createPostHandler,
   deletePostHandler,
@@ -33,6 +33,7 @@ import { errorHandler } from './middleware/errorMiddleware';
   app.post('/v1/signin', asyncHandler(singInHandler));
   app.get('/v1/posts', asyncHandler(listPostsHandler));
   app.get('/v1/posts/:id', asyncHandler(getPostHandler));
+  app.get('/v1/comments/:postId', asyncHandler(listComments));
 
   app.use(authMiddleware);
 

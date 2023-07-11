@@ -86,7 +86,7 @@ export class SqlDatastore implements Datastore {
     );
   }
   listComments(postId: string): Promise<Comment[]> {
-    throw new Error('Method not implemented.');
+    return this.db.all('SELECT * FROM comments WHERE postId = ?', postId);
   }
   deleteComment(id: string): Promise<void> {
     throw new Error('Method not implemented.');
