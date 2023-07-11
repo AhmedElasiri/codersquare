@@ -37,7 +37,7 @@ export const singInHandler: ExpressHandler<SingInRequest, SingInResponse> = asyn
 
   const existing = (await db.getUserByEmail(login)) || (await db.getUserByUsername(login));
   if (!existing || existing.password !== hashPassword(password)) {
-    return res.status(403).send({ error: 'User already exists' });
+    return res.status(403).send({ error: 'Email or password wrong' });
   }
   const jwt = signJwt({ userId: existing.id });
 

@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Request, Response } from 'express';
 
 import {
   GetPostResponse,
@@ -61,11 +62,23 @@ export const deletePostHandler: ExpressHandlerWithParams<
   null,
   deletePostResponse
 > = async (req, res) => {
-  console.log(req.params.id);
   if (!req.params.id) {
     res.sendStatus(400);
+    return;
+  }
+  if (!postBelongToCurrentUser(req, res)) {
+    res.sendStatus(403);
     return;
   }
   await db.deletePost(req.params.id);
   res.sendStatus(204);
 };
+
+async function postBelongToCurrentUser(req: Request, res: Response): Promise<boolean> {
+  const post = await db.getPost(req.params.id);
+  if (post?.userId === res.locals.userId) {
+    return true;
+  }
+  console.log('object');
+  return false;
+}
