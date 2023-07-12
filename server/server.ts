@@ -10,6 +10,7 @@ import {
   deleteCommentHandler,
   listComments,
 } from './handlers/commentHandler';
+import { createLikeHandler, deleteLikeHandler } from './handlers/likeHandler';
 import {
   createPostHandler,
   deletePostHandler,
@@ -46,6 +47,8 @@ import { errorHandler } from './middleware/errorMiddleware';
   app.delete('/v1/posts/:id', asyncHandler(deletePostHandler));
   app.post('/v1/comment', asyncHandler(createCommentHandler));
   app.delete('/v1/comments/:id', asyncHandler(deleteCommentHandler));
+  app.post('/v1/likes/:postId', asyncHandler(createLikeHandler));
+  app.delete('/v1/likes/:postId', asyncHandler(deleteLikeHandler));
 
   app.use(errorHandler);
 

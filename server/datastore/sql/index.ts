@@ -68,12 +68,18 @@ export class SqlDatastore implements Datastore {
   getPost(id: string): Promise<Post | undefined> {
     return this.db.get<Post>(`SELECT * FROM posts WHERE id = ?`, id);
   }
+
   async deletePost(id: string): Promise<void> {
     this.db.run(`DELETE FROM posts WHERE id = ?`, id);
   }
-  createLike(like: Like): Promise<void> {
-    throw new Error('Method not implemented.');
+  async createLike(like: Like): Promise<void> {
+    this.db.run('INSERT INTO likes (postId, userId) VALUES (?,?)', like.postId, like.userId);
   }
+
+  async deleteLike(like: Like): Promise<void> {
+    this.db.run('DELETE FROM likes WHERE postId = ? AND userId = ?', like.postId, like.userId);
+  }
+
   async createComment(comment: Comment): Promise<void> {
     this.db.run(
       'INSERT INTO comments (id, userId, postId, content, createdAt, parent_comment_id) VALUES (?,?,?,?,?,?)',
