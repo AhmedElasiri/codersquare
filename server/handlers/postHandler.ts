@@ -9,74 +9,78 @@ import {
   createPostRequest,
   createPostResponse,
 } from '../api';
-import { db } from '../datastore';
+import { Datastore } from '../datastore';
 import { ExpressHandler, ExpressHandlerWithParams, Post } from '../types';
 
-export const listPostsHandler: ExpressHandler<ListPostsRequest, ListPostsResponse> = async (
-  _req,
-  res
-) => {
-  // TODO: add pagination and filtering
-  res.send({ posts: await db.listPosts() });
-};
+export class PostHandler {
+  private db: Datastore;
 
-export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (
-  req,
-  res
-) => {
-  // TODO: better error message
-  if (!req.body.title || !req.body.url) {
-    res.sendStatus(400);
-    return;
+  constructor(db: Datastore) {
+    this.db = db;
   }
 
-  // TODO: validate url is new, otherwise add +1 to existing post
-  const post: Post = {
-    id: crypto.randomUUID(),
-    title: req.body.title,
-    url: req.body.url,
-    userId: res.locals.userId,
-    postedAt: Date.now(),
+  public listPostsHandler: ExpressHandler<ListPostsRequest, ListPostsResponse> = async (
+    _req,
+    res
+  ) => {
+    // TODO: add pagination and filtering
+    res.send({ posts: await this.db.listPosts() });
   };
-  await db.createPost(post);
-  res.sendStatus(201);
-};
 
-export const getPostHandler: ExpressHandlerWithParams<
-  { id: string },
-  null,
-  GetPostResponse
-> = async (req, res) => {
-  if (!req.params.id) return res.sendStatus(400);
-  const postToReturn = await db.getPost(req.params.id);
+  public createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (
+    req,
+    res
+  ) => {
+    // TODO: better error message
+    if (!req.body.title || !req.body.url) {
+      res.sendStatus(400);
+      return;
+    }
 
-  if (!postToReturn) {
-    return res.sendStatus(404);
-  }
-  return res.status(200).send({ post: postToReturn });
-};
+    // TODO: validate url is new, otherwise add +1 to existing post
+    const post: Post = {
+      id: crypto.randomUUID(),
+      title: req.body.title,
+      url: req.body.url,
+      userId: res.locals.userId,
+      postedAt: Date.now(),
+    };
+    await this.db.createPost(post);
+    res.sendStatus(201);
+  };
 
-export const deletePostHandler: ExpressHandlerWithParams<
-  { id: string },
-  null,
-  DeletePostResponse
-> = async (req, res) => {
-  if (!req.params.id) {
-    res.sendStatus(400);
-    return;
-  }
-  if (!isPostBelongToCurrentUser(req, res)) {
-    res.sendStatus(403);
-    return;
-  }
-  await db.deletePost(req.params.id);
-  res.sendStatus(204);
-};
+  public getPostHandler: ExpressHandlerWithParams<{ id: string }, null, GetPostResponse> = async (
+    req,
+    res
+  ) => {
+    if (!req.params.id) return res.sendStatus(400);
+    const postToReturn = await this.db.getPost(req.params.id);
 
-async function isPostBelongToCurrentUser(req: Request, res: Response): Promise<boolean> {
-  const post = await db.getPost(req.params.id);
-  if (post?.userId === res.locals.userId) {
-    return true;
+    if (!postToReturn) {
+      return res.sendStatus(404);
+    }
+    return res.status(200).send({ post: postToReturn });
+  };
+
+  public deletePostHandler: ExpressHandlerWithParams<{ id: string }, null, DeletePostResponse> =
+    async (req, res) => {
+      if (!req.params.id) {
+        res.sendStatus(400);
+        return;
+      }
+      if (!this.isPostBelongToCurrentUser(req, res)) {
+        res.sendStatus(403);
+        return;
+      }
+      await this.db.deletePost(req.params.id);
+      res.sendStatus(204);
+    };
+
+  async isPostBelongToCurrentUser(req: Request, res: Response): Promise<boolean> {
+    const post = await this.db.getPost(req.params.id);
+    if (post?.userId === res.locals.userId) {
+      return true;
+    }
+    return false;
   }
-  return false;
 }
